@@ -20,29 +20,23 @@ public class ProfileBreaker implements Callable<Result> {
         long start = System.nanoTime();
         int[] ints = randomInts();
         long lap = System.nanoTime();
-        int resultInt = uselessWork(ints, iters, rand.nextInt());
+        int resultInt = uselessWork(ints, iters);
         long end = System.nanoTime();
         return new Result(resultInt, lap-start, end-lap);
     }
 
-    private static int uselessWork(int[] ints, int iters, int fulcrum) {
-        // Do some useless work
+    private static int uselessWork(int[] ints, int iters) {
         int localResult = 17;
+        final int len = ints.length;
         for (int iter = 0; iter < iters; ++iter) {
-            final int len = ints.length;
-            for (int i = 1; i < len; ++i) {
-                ints[i] -= fulcrum;
-            }
             for (int i = 1; i < len; ++i) {
                 if (ints[i-1] != 0) {
                     ints[i] %= ints[i-1];
                 }
             }
-            for (int i = 0; i < len; ++i) {
-                if (ints[i] >= fulcrum) {
-                    localResult = 37 * localResult + ints[i];
-                }
-            }
+        }
+        for (int i = 0; i < len; ++i) {
+            localResult += ints[i];
         }
         return localResult;
     }
@@ -62,6 +56,7 @@ public class ProfileBreaker implements Callable<Result> {
         int nTasks = Integer.parseInt(args[0]);
         int iters = Integer.parseInt(args[1]);
         int arraySize = Integer.parseInt(args[2]);
+        boolean verbose = Boolean.parseBoolean(args[3]);
 
         NoSyncRand rand = new NoSyncRand((int)System.nanoTime());
         Queue<Future<Result>> results = new ArrayDeque<Future<Result>>(nTasks);
@@ -71,10 +66,15 @@ public class ProfileBreaker implements Callable<Result> {
             Future<Result> future = executor.submit(new ProfileBreaker(rand.nextInt(), iters, arraySize));
             results.add(future);
         }
+        int resultSum = 1;
         while (!results.isEmpty()) {
             Future<Result> future = results.remove();
             Result result = future.get();
-            System.out.println(result);
+            resultSum += result.value;
+            if (verbose) {
+                System.out.println(result);
+            }
         }
+        System.out.println(resultSum);
     }
 }
