@@ -48,27 +48,29 @@ public class ProfileBreaker implements Callable<Result> {
     }
 
     private void spinNoOps() {
-        for (int i = 0; i < 100; ++i) {
+        for (int i = 0; i < 10000000; ++i) {
             spin0();
         }
     }
 
     private void spin0() {
-        for (int i = 0; i < 100; ++i) {
+        for (int i = 0; i < 10000000; ++i) {
             spin1();
         }
     }
 
     private void spin1() {
-        for (int i = 0; i < 100; ++i) {
+        for (int i = 0; i < 10000000; ++i) {
             spin2();
         }
     }
 
-    private void spin2() {
-        for (int i = 0; i < 100; ++i) {
-            // nothing
+    private int spin2() {
+        int r = 0;
+        for (int i = 0; i < 10000000; ++i) {
+            r += 1;
         }
+        return r;
     }
 
     private int[] randomInts() {
