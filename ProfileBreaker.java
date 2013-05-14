@@ -18,11 +18,17 @@ public class ProfileBreaker implements Callable<Result> {
     @Override
     public Result call() {
         long start = System.nanoTime();
+
         int[] ints = randomInts();
-        long lap = System.nanoTime();
+        long lap1 = System.nanoTime();
+
         int resultInt = uselessWork(ints, iters);
-        long end = System.nanoTime();
-        return new Result(resultInt, lap-start, end-lap);
+        long lap2 = System.nanoTime();
+
+        spinNoOps();
+        long lap3 = System.nanoTime();
+
+        return new Result(resultInt, lap1-start, lap2-lap1, lap3-lap2);
     }
 
     private static int uselessWork(int[] ints, int iters) {
@@ -39,6 +45,30 @@ public class ProfileBreaker implements Callable<Result> {
             localResult += ints[i];
         }
         return localResult;
+    }
+
+    private void spinNoOps() {
+        for (int i = 0; i < 100; ++i) {
+            spin0();
+        }
+    }
+
+    private void spin0() {
+        for (int i = 0; i < 100; ++i) {
+            spin1();
+        }
+    }
+
+    private void spin1() {
+        for (int i = 0; i < 100; ++i) {
+            spin2();
+        }
+    }
+
+    private void spin2() {
+        for (int i = 0; i < 100; ++i) {
+            // nothing
+        }
     }
 
     private int[] randomInts() {
