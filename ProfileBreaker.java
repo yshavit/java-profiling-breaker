@@ -1,5 +1,6 @@
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.*;
 
 public class ProfileBreaker implements Callable<Result> {
     private final int iters;
@@ -7,6 +8,7 @@ public class ProfileBreaker implements Callable<Result> {
     private long timeSpent;
     private final SimpleRand rand;
     private volatile Result result;
+    private int count;
 
     public ProfileBreaker(int seed, int iters, int arraySize) {
         this.iters = iters;
@@ -28,7 +30,7 @@ public class ProfileBreaker implements Callable<Result> {
         spinNoOps();
         long lap3 = System.nanoTime();
 
-        return new Result(resultInt, lap1-start, lap2-lap1, lap3-lap2);
+        return new Result(resultInt + getCount(), lap1-start, lap2-lap1, lap3-lap2);
     }
 
     private static int uselessWork(int[] ints, int iters) {
@@ -48,8 +50,14 @@ public class ProfileBreaker implements Callable<Result> {
     }
 
     private void spinNoOps() {
+        for (int i = 0; i < 1000; ++i) {
+            updateCount(1);
+        }
         for (int i = 0; i < 10000000; ++i) {
             spin0();
+        }
+        for (int i = 0; i < 1000; ++i) {
+            updateCount(-1);
         }
     }
 
@@ -72,6 +80,15 @@ public class ProfileBreaker implements Callable<Result> {
         }
         return r;
     }
+
+    private synchronized void updateCount(int delta) {
+        count += delta;
+    }
+
+    private synchronized int getCount() {
+        return count;
+    }
+
 
     private int[] randomInts() {
         int[] ints = new int[arraySize];
