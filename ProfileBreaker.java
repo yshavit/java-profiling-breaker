@@ -5,13 +5,13 @@ public class ProfileBreaker implements Callable<Result> {
     private final int iters;
     private final int arraySize;
     private long timeSpent;
-    private final NoSyncRand rand;
+    private final SimpleRand rand;
     private volatile Result result;
 
     public ProfileBreaker(int seed, int iters, int arraySize) {
         this.iters = iters;
         this.arraySize = arraySize;
-        rand = new NoSyncRand(seed);
+        rand = new SimpleRand(seed);
         timeSpent = 0;
     }
 
@@ -90,7 +90,7 @@ public class ProfileBreaker implements Callable<Result> {
         int arraySize = Integer.parseInt(args[2]);
         boolean verbose = Boolean.parseBoolean(args[3]);
 
-        NoSyncRand rand = new NoSyncRand((int)System.nanoTime());
+        SimpleRand rand = new SimpleRand((int)System.nanoTime());
         Queue<Future<Result>> results = new ArrayDeque<Future<Result>>(nTasks);
         ExecutorService executor = Executors.newFixedThreadPool(4);
 
