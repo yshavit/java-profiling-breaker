@@ -9,7 +9,7 @@ compiling and running
 =====================
 
     javac *.java
-    java ProfileBreaker <number of tasks> <iterations per task> <size of int arrays>
+    java ProfileBreaker <number of tasks> <iterations per task> <size of int arrays> <verbose (true|false)>
 
 How do we get `uselessWork` to show up?
 =======================================
