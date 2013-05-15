@@ -1,0 +1,4 @@
+#!/bin/bash
+rm *.class 2> /dev/null
+set -x
+javac *.java && time java Main 10000 100 500 false
