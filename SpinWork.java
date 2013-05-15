@@ -28,8 +28,8 @@ public class SpinWork {
 
     private int spin2() {
         int r = 0;
-        for (int i = 0; i < 10000000; ++i) {
-            r += 1;
+        for (int i = 0; i < 10; ++i) {
+            r += r % (i+1);
         }
         return r;
     }
