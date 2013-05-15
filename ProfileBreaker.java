@@ -108,5 +108,6 @@ public class ProfileBreaker implements Callable<Result> {
             }
         }
         System.out.println(resultSum);
+        executor.shutdown();
     }
 }
