@@ -11,7 +11,13 @@ compiling and running
     javac *.java
     java Main <number of tasks> <iterations per task> <size of int arrays> <verbose (true|false)>
 
-How do we get `uselessWork` to show up?
+I get good results with something like:
+
+    java Main 10000000 1000 100 false
+
+The first arg (10000000) basically controls how long the application will run. The second controls how much time is spent in `HardWork.work` -- you want this to be low enough that the application is responsive (remember, there are no yield points within that method, so while it's there the application will seem "stuck" in a profiler) yet high enough that time is actually spent there. The last number is the size of the `int[]`s on which we operate; if this is too large, the profile is largley the time spent in populating these arrays.
+
+How do we get `HardWork.work` to show up?
 =======================================
 
-JVisualVM won't find it, because `uselessWork` doesn't contain any yield points. The only profiler I know of that does catch it is Solaris Studio Performance Analyzer.
+JVisualVM won't find it, because `HardWork.work` doesn't contain any yield points. The only profiler I know of that does catch it is Solaris Studio Performance Analyzer.
