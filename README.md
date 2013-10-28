@@ -17,7 +17,7 @@ I get good results with something like:
 
 - The first arg (10000000) basically controls how long the application will run.
 - The second controls how much time is spent in `HardWork.work` &mdash; you want this to be low enough that the application is responsive (remember, there are no yield points within that method, so while it's there the application will seem "stuck" in a profiler) yet high enough that time is actually spent there.
-- The last number is the size of the `int[]`s on which we operate; if this is too large, the profile is largley the time spent in populating these arrays.
+- The last number is the size of the `int[]`s on which we operate; if this is too large, the profile is mostly the time spent in populating these arrays, which isn't the intended focus of the app.
 
 The results
 ===========
