@@ -38,3 +38,12 @@ If you're using something like VisualVM, you should see `SpinWork.work` appear m
 In fact, `SpinWork.work` takes almost no time: the JIT is able to optimize away all those empty spin loops. It still does have to update the count 1000 times up and 1000 times back down, since `updateCount` is synchronized (escape analysis could one day remove even this, but it doesn't as of late 2013). Those 1000 increments and decrements take very little time; but they're _all_ yield points, because of the synchronization.
 
 Meanwhile, `HardWork.work` takes a lot of time, but doesn't contain any yield points. So, even though that's where most (depending on your args!) of the time is spent, most profilers will competely miss it. The only profiler I know of that does catch it is Solaris Studio Performance Analyzer.
+
+These results seem contrived
+============================
+
+They are. I purposely created two extreme methods: one that does almost no work but contains lots of yield points, and another that does a lot of work but contains not a single yield point. Most methods aren't quite so polar in either direcion.
+
+That said, it definitely demonstrates the potential for biases in Java profilers.
+
+Next time you see a method that "should" be cheap appear a lot in a CPU sample &mdash; for instance, a trivial getter that just returns a `volatile` or is `synchronized` &mdash; consider that it could be that it _is_ cheap, but appears in a lot of samples because of bias towards yield points. If you really need accurate results, I'd recommend something like Solaris Studio Performance Analyzer.
