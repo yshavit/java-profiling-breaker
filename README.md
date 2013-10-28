@@ -19,6 +19,17 @@ I get good results with something like:
 - The second controls how much time is spent in `HardWork.work` &mdash; you want this to be low enough that the application is responsive (remember, there are no yield points within that method, so while it's there the application will seem "stuck" in a profiler) yet high enough that time is actually spent there.
 - The last number is the size of the `int[]`s on which we operate; if this is too large, the profile is mostly the time spent in populating these arrays, which isn't the intended focus of the app.
 
+If `verbose` is enabled, you'll get an output of each iteration that summarizes how much time is spent in setting the iteration up (ie populating the `int[]`, `HardWork.work` and `SpinWork.work`. It also outputs a value that you can ignore; it's just there so that the JIT can't optimize away the loops as doing no work. The output will look something like this:
+
+    ...
+    setup: 0.010	work: 0.704	spin: 0.034	value: 953606947
+    setup: 0.009	work: 0.610	spin: 0.037	value: -144282825
+    setup: 0.008	work: 0.626	spin: 0.036	value: -1096571981
+    setup: 0.009	work: 0.672	spin: 0.035	value: -2101465172
+    ...
+
+The above is with the arguments I mentioned earlier. Notice that we spend about 20x as much time in `HardWork.work` as we do in `SpinWork.work`. **When I profiled this with VisualVM, it said that 50.1% of the time was spent in `SpinWork.work`, while `HardWork.work` didn't show up in even a single sample.**
+
 The results
 ===========
 
@@ -26,4 +37,4 @@ If you're using something like VisualVM, you should see `SpinWork.work` appear m
 
 In fact, `SpinWork.work` takes almost no time: the JIT is able to optimize away all those empty spin loops. It still does have to update the count 1000 times up and 1000 times back down, since `updateCount` is synchronized (escape analysis could one day remove even this, but it doesn't as of late 2013). Those 1000 increments and decrements take very little time; but they're _all_ yield points, because of the synchronization.
 
-Meanwhile, `HardWork.work` takes a lot of time, but doesn't contain any yield points. So, even though that's where a lot (possibly even most, depending on your args!) of the time is spent, most profilers will competely miss it. The only profiler I know of that does catch it is Solaris Studio Performance Analyzer.
+Meanwhile, `HardWork.work` takes a lot of time, but doesn't contain any yield points. So, even though that's where most (depending on your args!) of the time is spent, most profilers will competely miss it. The only profiler I know of that does catch it is Solaris Studio Performance Analyzer.
