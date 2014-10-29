@@ -1,7 +1,7 @@
 java-profiling-breaker
 ======================
 
-A simple program that demonstrates how most of the standard Java CPU samplers are broken. This creates a `Callable` whose run method invokes two methods: a pretty quick one that initializes an array of ints, and a slower one that operates on this ints. On my machine, the slow method takes about 10x as long as the quick one -- and yet doesn't show up at all using JVisualVM.
+A simple program that demonstrates how most of the standard Java CPU samplers are broken. This creates a `Callable` whose run method invokes two methods: a pretty quick one that initializes an array of ints, and a slower one that operates on this ints. On my machine, the slow method takes about 100x as long as the quick one -- and yet doesn't show up at all using JVisualVM.
 
 For information as to why this happens: http://pl.cs.colorado.edu/papers/mytkowicz-pldi10.pdf
 
@@ -19,7 +19,7 @@ compiling and running
 
 I get good results with something like:
 
-    java Main 10000000 1000 100 50 false
+    java Main 10000 1000 100 50 false
 
 - The first arg (10000000) basically controls how long the application will run.
 - The second controls how much time is spent in `HardWork.work` &mdash; you want this to be low enough that the application is responsive (remember, there are no yield points within that method, so while it's there the application will seem "stuck" in a profiler) yet high enough that time is actually spent there.
@@ -35,7 +35,7 @@ If `verbose` is enabled, you'll get an output of each iteration that summarizes 
     setup: 0.007	work: 0.422	spin: 0.004	value: 1962871613
     ...
 
-The above is with the arguments I mentioned earlier. Notice that we spend about 20x as much time in `HardWork.work` as we do in `SpinWork.work`. **When I profiled this with VisualVM, it said that more than 97% of the time was spent in `SpinWork.work`, while `HardWork.work` didn't show up in even a single sample.**
+The above is with the arguments I mentioned earlier. Notice that we spend about 100x as much time in `HardWork.work` as we do in `SpinWork.work`. When I profiled this with VisualVM, it said that more than 97% of the time was spent in `SpinWork.work`, while `HardWork.work` didn't show up in even a single sample.
 
 The results
 ===========
