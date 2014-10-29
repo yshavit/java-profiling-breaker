@@ -1,3 +1,5 @@
+package com.yuvalshavit.profilebreaker;
+
 public class Result {
     public final int value;
     public final long setupTime;

@@ -1,3 +1,5 @@
+package com.yuvalshavit.profilebreaker;
+
 public class ProfileBreaker {
     private final int iters;
     private final int arraySize;

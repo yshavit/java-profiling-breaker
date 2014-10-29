@@ -1,3 +1,5 @@
+package com.yuvalshavit.profilebreaker;
+
 public class SpinWork {
     private int count;
 

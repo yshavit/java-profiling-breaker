@@ -1,3 +1,5 @@
+package com.yuvalshavit.profilebreaker;
+
 /**
  * Medium-quality randoms. This class provides randoms which are
  * just good enough to make sure the JIT can't optimize them out.

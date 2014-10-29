@@ -1,3 +1,5 @@
+package com.yuvalshavit.profilebreaker;
+
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
@@ -10,8 +12,13 @@ public class Main {
         final int arraySize = Integer.parseInt(args[2]);
         final int spins = Integer.parseInt(args[3]);
         final boolean verbose = Boolean.parseBoolean(args[4]);
-        
         int nThreads = Integer.parseInt(System.getProperty("threads", "2"));
+
+        System.out.println("Press enter to start");
+        System.in.read();
+        
+        long start = System.nanoTime();
+        System.out.println("Starting.");
 
         final BlockingQueue<ProfileBreaker> breakers = new ArrayBlockingQueue<ProfileBreaker>(nThreads * 10);
         final AtomicInteger resultSum = new AtomicInteger(0);
@@ -22,7 +29,10 @@ public class Main {
         }
         
         doneLatch.await();
-        System.out.println(resultSum);
+
+        long end = System.nanoTime();
+        long millis = TimeUnit.NANOSECONDS.toMillis(end - start);
+        System.out.printf("took %d ms (throwaway result=%s)%n", millis, resultSum);
     }
 
     public static class Handler implements Runnable {
