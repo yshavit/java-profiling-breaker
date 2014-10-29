@@ -8,7 +8,8 @@ public class Main {
         final int nTasks = Integer.parseInt(args[0]);
         final int iters = Integer.parseInt(args[1]);
         final int arraySize = Integer.parseInt(args[2]);
-        final boolean verbose = Boolean.parseBoolean(args[3]);
+        final int spins = Integer.parseInt(args[3]);
+        final boolean verbose = Boolean.parseBoolean(args[4]);
         
         int nThreads = Integer.parseInt(System.getProperty("threads", "2"));
 
@@ -16,7 +17,7 @@ public class Main {
         final AtomicInteger resultSum = new AtomicInteger(0);
         final CountDownLatch doneLatch = new CountDownLatch(nTasks);
         for (int i = 0; i < nThreads; ++i) {
-            startThread(new Producer(breakers, iters, arraySize));
+            startThread(new Producer(breakers, iters, arraySize, spins));
             startThread(new Handler(breakers, resultSum, doneLatch, verbose));
         }
         
@@ -61,11 +62,13 @@ public class Main {
         private final BlockingQueue<ProfileBreaker> workQueue;
         private final int iters;
         private final int arraySize;
+        private final int spins;
 
-        public Producer(BlockingQueue<ProfileBreaker> workQueue, int iters, int arraySize) {
+        public Producer(BlockingQueue<ProfileBreaker> workQueue, int iters, int arraySize, int spins) {
             this.workQueue = workQueue;
             this.iters = iters;
             this.arraySize = arraySize;
+            this.spins = spins;
         }
         
         @Override
@@ -73,7 +76,7 @@ public class Main {
             SimpleRand rand = new SimpleRand((int)System.nanoTime() + hashCode());
             while (true) {
                 try {
-                    workQueue.put(new ProfileBreaker(rand.nextInt(), iters, arraySize));
+                    workQueue.put(new ProfileBreaker(rand.nextInt(), iters, arraySize, spins));
                 }
                 catch (InterruptedException e) {
                     Thread.currentThread().interrupt();

@@ -1,7 +1,7 @@
 public class SpinWork {
     private int count;
 
-    public int work() {
+    public int work(int spins) {
         // This method spin0's, which spin1's, which spin2's,
         // which does some mod operations. It looks like it should
         // take a long time, but the JIT will realize that the whole
@@ -10,40 +10,16 @@ public class SpinWork {
         // on an uncontended lock. This is very quick, but
         // each count is a yield point, so they'll appear in
         // a lot of JVM samples.
-        for (int i = 0; i < 1000; ++i) {
-            updateCount(1);
-        }
-        for (int i = 0; i < 10000000; ++i) {
-            spin0();
-        }
-        for (int i = 0; i < 1000; ++i) {
-            updateCount(-1);
+        for (int i = 0; i < spins; ++i) {
+            updateCount(i);
         }
         return getCount();
     }
 
-    private void spin0() {
-        for (int i = 0; i < 10000000; ++i) {
-            spin1();
-        }
-    }
-
-    private void spin1() {
-        for (int i = 0; i < 10000000; ++i) {
-            spin2();
-        }
-    }
-
-    private int spin2() {
-        int r = 0;
-        for (int i = 0; i < 10; ++i) {
-            r += r % (i+1);
-        }
-        return r;
-    }
-
     private synchronized void updateCount(int delta) {
-        count += delta;
+        int randomizedCount = SimpleRand.nextInt(delta + count);
+        String s = String.valueOf(randomizedCount);
+        count = s.length();
     }
 
     private synchronized int getCount() {

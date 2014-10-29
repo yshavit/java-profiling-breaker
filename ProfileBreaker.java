@@ -1,14 +1,16 @@
 public class ProfileBreaker {
     private final int iters;
     private final int arraySize;
+    private final int spins;
     private long timeSpent;
     private final SimpleRand rand;
     private volatile Result result;
     private int count;
 
-    public ProfileBreaker(int seed, int iters, int arraySize) {
+    public ProfileBreaker(int seed, int iters, int arraySize, int spins) {
         this.iters = iters;
         this.arraySize = arraySize;
+        this.spins = spins;
         rand = new SimpleRand(seed);
         timeSpent = 0;
     }
@@ -22,7 +24,7 @@ public class ProfileBreaker {
         int resultInt = HardWork.work(ints, iters);
         long lap2 = System.nanoTime();
 
-        int spinCount = new SpinWork().work();
+        int spinCount = new SpinWork().work(spins);
         long lap3 = System.nanoTime();
 
         return new Result(resultInt + spinCount, lap1-start, lap2-lap1, lap3-lap2);
