@@ -9,6 +9,13 @@ public class HardWork {
         // However, it contains no yield points -- no memory allocations,
         // synchronization, field accesses (especially no volatile fields), etc.
         // As such, the JVM won't ever sample in this method.
+        //
+        // If you uncomment the call to iterateOver and its related functions,
+        // sampling gets worse (due to more methods to sample). Make sure to
+        // comment out the "for" loop in this method, if you do that.
+        //
+        // TODO wrap both variants in a private static final boolean, and
+        // confirm that the sampling/profiling stays the same.
         
         int localResult = 17;
         final int len = ints.length;
