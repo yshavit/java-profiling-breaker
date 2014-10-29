@@ -8,8 +8,14 @@ For information as to why this happens: http://pl.cs.colorado.edu/papers/mytkowi
 compiling and running
 =====================
 
-    javac *.java
-    java Main <# runs> <iterations per task> <size of int arrays> <size of each spin> <verbose (true|false)>
+    javac -d target src/com/yuvalshavit/profilebreaker/*.java
+    cd target
+    java com.yuvalshavit.profilebreaker.Main \
+        <# runs> \
+        <iterations per task> \
+        <size of int arrays> \
+        <size of each spin> \
+        <verbose (true|false)>
 
 I get good results with something like:
 
