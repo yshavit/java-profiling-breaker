@@ -1,3 +1,10 @@
+Update as of 2023
+=================
+
+Technology advances! Software gets better!
+
+This app no longer breaks IntelliJ's Ultimate's built-in profiler, which is the one I happen to use. I assume the rest (VisualVM et al.) have also caught up. As such, I am archiving this project. Onward and upward!
+
 java-profiling-breaker
 ======================
 
